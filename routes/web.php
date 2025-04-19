@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
@@ -78,5 +79,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('clients', ClientController::class)->except(['edit']);
 
     Route::resource('projects', ProjectController::class)->except(['edit']);
+
+    Route::resource('invoices', InvoiceController::class)->except(['edit']);
+    Route::get('/invoices-get-project/{client}', [InvoiceController::class, 'get_project'])->name('invoices.get_project');
+    Route::post('/invoice-projects/{invoice}', [InvoiceController::class, 'add_project'])->name('invoice-projects.add');
+    Route::delete('/invoice-projects/{invoiceProject}', [InvoiceController::class, 'delete_project'])->name('invoice-projects.delete');
 
 });

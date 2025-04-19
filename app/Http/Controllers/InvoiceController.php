@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceProject;
 use App\Models\Project;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use App\Traits\ClientTrait;
 
@@ -20,7 +22,14 @@ class InvoiceController extends Controller
     public function index()
     {
         //
-        $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
+        if(Auth::user()->role == 'ADMIN') {
+            $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
+        }
+        else {
+            $client_ids = Client::where('user_id', Auth::user()->id)->pluck('id')->toArray();
+
+            $invoices = Invoice::with(['client', 'invoiceProject'])->whereIn('client_id', $client_ids)->orderByDesc('invoice_number')->get();
+        }
 
         return view('invoice.listing', [
             'datas' => $invoices,
@@ -35,7 +44,7 @@ class InvoiceController extends Controller
         //
         $clients = $this->client_list();
 
-        return view('invoice.add_invoice', [
+        return view('invoice.create', [
             'clients' => $clients,
         ]);
     }
@@ -89,10 +98,18 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         //
-        $invoice = Invoice::with(['client', 'invoiceProject.project'])->where('id', $invoice->id)->first();
+        $invoice = Invoice::with(['client'])->where('id', $invoice->id)->first();
 
-        return view('invoice.view_invoice', [
+        $invoice_projects = InvoiceProject::with(['project'])->where('invoice_id', $invoice->id)->get();
+
+        $invoice_projects_ids = (clone $invoice_projects)->pluck('project_id')->toArray();
+
+        $projects = Project::where('client_id', $invoice->client_id)->whereNotIn('id', $invoice_projects_ids)->orderByDesc('created_at')->get();
+
+        return view('invoice.edit', [
             'datas' => $invoice,
+            'projects' => $projects,
+            'invoice_projects' => $invoice_projects,
         ]);
     }
 
@@ -138,6 +155,17 @@ class InvoiceController extends Controller
         });
     }
 
+    public function get_project(Client $client)
+    {
+        //
+        $projects = Project::where('client_id', $client->id)->orderByDesc('created_at')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'projects' => $projects
+        ], 200);
+    }
+
     public function add_project(Request $request, Invoice $invoice)
     {
         //
@@ -161,26 +189,21 @@ class InvoiceController extends Controller
 
     }
 
-    public function delete_project(Request $request)
+    public function delete_project(InvoiceProject $invoiceProject)
     {
         //
-        return DB::transaction(function() use ($request) {
-            $validatedData = $request->validate([
-                'invoice_project_id' => 'required|integer',
-            ]);
+        return DB::transaction(function() use ($invoiceProject) {
 
-            $invoice_project = InvoiceProject::where('id', $request->invoice_project_id)->first();
-
-            $invoice = Invoice::findOrFail($invoice_project->invoice_id);
-
-            if ($invoice_project) {
-                $invoice_project->delete();
+            if ($invoiceProject) {
+                $invoiceProject->delete();
             }
             else {
                 return response()->json(['status' => 'error', 'message' => 'Project in Invoice not found'], 404);
             }
 
-            $project = Project::findOrFail($invoice_project->project_id);
+            $invoice = Invoice::findOrFail($invoiceProject->invoice_id);
+
+            $project = Project::findOrFail($invoiceProject->project_id);
 
             $total = $invoice->total;
 
@@ -213,7 +236,7 @@ class InvoiceController extends Controller
     {
         $invoice_project = [
             'invoice_id' => $invoice->id,
-            'project_id' => $project->project_id,
+            'project_id' => $project->id,
             'rate' => $project->rate,
             'duration' => $project->duration,
         ];

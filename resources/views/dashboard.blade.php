@@ -134,7 +134,7 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ $total }}</h3>
+                        <h3>{{ number_format($total, 2) }}</h3>
 
                         <h4><br></h4>
 

@@ -16,7 +16,8 @@ function handleAjaxRequest(options) {
         errorCallback: null,
         redirectUrl: null,
         redirectPage: false,
-        beforeAjax: null
+        beforeAjax: null,
+        autoRedirect: true,
     };
 
     const settings = { ...defaults, ...options };
@@ -85,20 +86,32 @@ function handleAjaxRequest(options) {
                 });
             }
             else {
-                Swal.fire({
+
+                const swalSuccessConfig = {
                     icon: 'success',
                     position: 'center',
                     title: settings.successTitle,
-                    showConfirmButton: true,
-                    position: 'center',
                     grow: false,
                     backdrop: true,
                     allowOutsideClick: false,
-                }).then((result) => {
-                    if (result.isConfirmed && settings.redirectPage) {
-                        handleRedirect();
-                    }
-                });
+                    showConfirmButton: true,
+                };
+
+                if (settings.autoRedirect) {
+                    Swal.fire({
+                        ...swalSuccessConfig,
+                        timer: 1500,
+                        // timerProgressBar: true,
+                    }).then(() => {
+                        if (settings.redirectPage) handleRedirect();
+                    });
+                } else {
+                    Swal.fire({
+                        ...swalSuccessConfig,
+                    }).then((result) => {
+                        if (result.isConfirmed && settings.redirectPage) handleRedirect();
+                    });
+                }
             }
 
             if (settings.successCallback) {
