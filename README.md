@@ -64,6 +64,8 @@ PASSPORT_CLIENT_ID=your-client-id
 
 PASSPORT_CLIENT_SECRET=your-client-secret
 
+Then you can run the API through Postman Collection.
+
 ### 9. Start the Application
 
 - Open http://invoicing-system.test (if your folder name is invoicing-system) in your browser.
