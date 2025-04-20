@@ -15,8 +15,9 @@ A Laravel-based invoicing system.
 
 ### 1. Clone the Repository
 
-git clone [https://github.com/your-username/invoicing-system.git](https://github.com/coaller3/invoicing-system.git)
-cd invoicing-system
+git clone https://github.com/coaller3/invoicing-system.git
+
+Then cd invoicing-system
 
 ### 2. Place in Laragon's `www` Folder
 
