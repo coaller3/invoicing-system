@@ -78,6 +78,12 @@
 
                                             &nbsp;
 
+                                            <a class="btn btn-warning" href="{{url('invoices')}}/{{$item->id}}/PDF" target="_blank">
+                                                PDF
+                                            </a>
+
+                                            &nbsp;
+
                                             <button class="btn btn-danger" data-route="{{url('invoices')}}/{{$item->id}}" data-csrf="{{ csrf_token() }}" onclick="removeData(this)">
                                                 Delete
                                             </button>

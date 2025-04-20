@@ -98,7 +98,6 @@
                     <div class="icon">
                         <i class="fas fa-user-tie"></i>
                     </div>
-                    {{-- <a href="{{ url('/shipments') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> --}}
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -113,7 +112,6 @@
                     <div class="icon">
                         <i class="fas fa-project-diagram"></i>
                     </div>
-                    {{-- <a href="{{ url('/shipments?principal=&date='.$date_url.'&status=DELIVERED&awb_num=&tracking_num=') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> --}}
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -128,7 +126,6 @@
                     <div class="icon">
                         <i class="fas fa-file-invoice"></i>
                     </div>
-                    {{-- <a href="{{ url('/shipments?principal=&date='.$date_url.'&status=Incomplete&awb_num=&tracking_num=') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> --}}
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -143,7 +140,6 @@
                     <div class="icon">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
-                    {{-- <a href="{{ url('/shipments?principal=&date='.$date_url.'&status=Incomplete&awb_num=&tracking_num=') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> --}}
                 </div>
             </div>
         </div>

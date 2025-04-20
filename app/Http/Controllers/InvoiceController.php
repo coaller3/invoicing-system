@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use App\Traits\ClientTrait;
 
 class InvoiceController extends Controller
@@ -153,6 +155,22 @@ class InvoiceController extends Controller
 
             return response()->json(['status' => 'success'], 200);
         });
+    }
+
+    public function invoicePDF(Invoice $invoice)
+    {
+        //
+        $invoice = Invoice::with(['client'])->where('id', $invoice->id)->first();
+
+        $invoice_projects = InvoiceProject::with(['project'])->where('invoice_id', $invoice->id)->get();
+
+        $pdf = PDF::loadView('invoice.invoice_pdf', [
+            'invoice' => $invoice,
+            'invoice_projects' => $invoice_projects,
+        ])->setPaper('a4', 'potrait');
+
+        return $pdf->stream($invoice->invoice_number.'.pdf');
+
     }
 
     public function get_project(Client $client)

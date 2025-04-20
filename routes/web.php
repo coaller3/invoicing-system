@@ -85,4 +85,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/invoice-projects/{invoice}', [InvoiceController::class, 'add_project'])->name('invoice-projects.add');
     Route::delete('/invoice-projects/{invoiceProject}', [InvoiceController::class, 'delete_project'])->name('invoice-projects.delete');
 
+    Route::get('/invoices/{invoice}/PDF', [InvoiceController::class, 'invoicePDF'])->name('invoices.pdf');
+
 });
