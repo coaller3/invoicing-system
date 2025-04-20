@@ -59,6 +59,7 @@ Run php artisan passport:client --password to create Password Grant Client.
 - Update the following lines in your `.env` file:
 
 PASSPORT_CLIENT_ID=your-client-id
+
 PASSPORT_CLIENT_SECRET=your-client-secret
 
 ### 9. Start the Application
