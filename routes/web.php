@@ -87,4 +87,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invoices/{invoice}/PDF', [InvoiceController::class, 'invoicePDF'])->name('invoices.pdf');
 
+    Route::post('/invoices/{invoice}/email', [InvoiceController::class, 'email_invoice'])->name('invoices.email');
+
 });

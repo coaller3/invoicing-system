@@ -6,9 +6,12 @@ use App\Models\Invoice;
 use App\Models\InvoiceProject;
 use App\Models\Project;
 use App\Models\Client;
+use App\Mail\InvoiceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -160,6 +163,37 @@ class InvoiceController extends Controller
     public function invoicePDF(Invoice $invoice)
     {
         //
+        $pdf = $this->invoice_pdf_generate($invoice);
+
+        return $pdf->stream($invoice->invoice_number.'.pdf');
+
+    }
+
+    public function email_invoice(Invoice $invoice)
+    {
+        $pdf = $this->invoice_pdf_generate($invoice);
+        $pdfContent = $pdf->output();
+
+        $clientName = $invoice->client?->name ?? '';
+        $invoiceNumber = $invoice->invoice_number;
+        $email = $invoice->client?->email ?? '';
+
+        if ($email == '') {
+            return response()->json(['status' => 'error', 'message' => 'Client email not found'], 404);
+        }
+
+        $pdfPath = 'Invoice/' . $invoiceNumber . '.pdf';
+        Storage::put($pdfPath, $pdfContent);
+
+        Mail::to("damiensim96@gmail.com")->queue(
+        // Mail::to($email)->queue(
+            new InvoiceMail($clientName, $invoiceNumber, $pdfPath));
+
+        return response()->json(['status' => 'sent']);
+    }
+
+    private function invoice_pdf_generate($invoice)
+    {
         $invoice = Invoice::with(['client'])->where('id', $invoice->id)->first();
 
         $invoice_projects = InvoiceProject::with(['project'])->where('invoice_id', $invoice->id)->get();
@@ -169,8 +203,7 @@ class InvoiceController extends Controller
             'invoice_projects' => $invoice_projects,
         ])->setPaper('a4', 'potrait');
 
-        return $pdf->stream($invoice->invoice_number.'.pdf');
-
+        return $pdf;
     }
 
     public function get_project(Client $client)

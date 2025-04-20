@@ -5,49 +5,37 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
-class InvoiceMail extends Mailable
+class InvoiceMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    public $clientName;
+    public $invoiceNumber;
+    public $pdfPath;
+
+    public function __construct($clientName, $invoiceNumber, $pdfPath)
     {
-        //
+        $this->clientName = $clientName;
+        $this->invoiceNumber = $invoiceNumber;
+        $this->pdfPath = $pdfPath;
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function build()
     {
-        return new Envelope(
-            subject: 'Invoice Mail',
-        );
-    }
+        $mail = $this->subject('Your Invoice: ' . $this->invoiceNumber)
+            ->view('email.invoice')
+            ->with([
+                'clientName' => $this->clientName,
+                'invoiceNumber' => $this->invoiceNumber,
+            ]);
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'view.name',
-        );
-    }
+        if (Storage::exists($this->pdfPath)) {
+            $mail->attachFromStorage($this->pdfPath);
+        }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        return $mail;
     }
 }

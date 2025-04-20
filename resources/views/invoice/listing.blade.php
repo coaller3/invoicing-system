@@ -84,6 +84,12 @@
 
                                             &nbsp;
 
+                                            <button type="button" class="btn btn-info" onclick="confirmSendEmail({{ $item->id }})">
+                                                Email
+                                            </button>
+
+                                            &nbsp;
+
                                             <button class="btn btn-danger" data-route="{{url('invoices')}}/{{$item->id}}" data-csrf="{{ csrf_token() }}" onclick="removeData(this)">
                                                 Delete
                                             </button>
@@ -135,6 +141,54 @@
 
 @section('pagespecificscripts')
 <script>
+    function confirmSendEmail(invoiceId) {
+        Swal.fire({
+            title: 'Send Invoice Email?',
+            text: "Do you want to send this invoice to the client?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: false,
+            customClass: {
+                confirmButton: 'btn btn-success mr-2',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Trigger your send email function (AJAX or redirect)
+                $.ajax({
+                    url: '/invoices/' + invoiceId + '/email',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            position: 'center',
+                            type: 'success',
+                            title: 'The invoice email has been sent.',
+                            showConfirmButton: true,
+                        })
+                        setTimeout(function() {
+                            window.location.replace("{{ url('invoices') }}");
+                        }, 1500);
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire(
+                            'Error!',
+                            "Failed to send email.",
+                            'error'
+                        )
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    }
+
     $(function(){
 
         $('#paid-date-modal').on('show.bs.modal', function (event) {
