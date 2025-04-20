@@ -19,17 +19,7 @@ class ProjectController extends Controller
     public function index()
     {
         //
-        if(Auth::user()->role == 'ADMIN') {
-            $datas = Project::with(['client'])->orderByDesc('created_at')->get();
-        }
-        else {
-            $datas = Project::whereHas('client', function($query) {
-                $query->where('user_id', Auth::user()->id);
-            })
-            ->with(['client'])
-            ->orderByDesc('created_at')
-            ->get();
-        }
+        $datas = $this->project_list();
 
         return view('project.listing', ['datas' => $datas]);
     }
@@ -132,5 +122,30 @@ class ProjectController extends Controller
         //
         $project->delete();
         return response()->json(['status'=>"success"], 200);
+    }
+
+    public function index_api()
+    {
+        //
+        $datas = $this->project_list();
+
+        return response()->json(['status'=>"success", 'data' => $datas], 200);
+    }
+
+    private function project_list()
+    {
+        if(Auth::user()->role == 'ADMIN') {
+            $datas = Project::with(['client'])->orderByDesc('created_at')->get();
+        }
+        else {
+            $datas = Project::whereHas('client', function($query) {
+                $query->where('user_id', Auth::user()->id);
+            })
+            ->with(['client'])
+            ->orderByDesc('created_at')
+            ->get();
+        }
+
+        return $datas;
     }
 }

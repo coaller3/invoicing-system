@@ -121,4 +121,12 @@ class ClientController extends Controller
         $client->delete();
         return response()->json(['status'=>"success"], 200);
     }
+
+    public function index_api()
+    {
+        //
+        $datas = $this->client_list();
+
+        return response()->json(['status'=>"success", 'datas'=>$datas], 200);
+    }
 }

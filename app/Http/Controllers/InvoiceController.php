@@ -27,14 +27,7 @@ class InvoiceController extends Controller
     public function index()
     {
         //
-        if(Auth::user()->role == 'ADMIN') {
-            $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
-        }
-        else {
-            $client_ids = Client::where('user_id', Auth::user()->id)->pluck('id')->toArray();
-
-            $invoices = Invoice::with(['client', 'invoiceProject'])->whereIn('client_id', $client_ids)->orderByDesc('invoice_number')->get();
-        }
+        $invoices = $this->invoice_list();
 
         return view('invoice.listing', [
             'datas' => $invoices,
@@ -160,6 +153,14 @@ class InvoiceController extends Controller
         });
     }
 
+    public function index_api()
+    {
+        //
+        $invoices = $this->invoice_list();
+
+        return response()->json(['status' => 'success', 'datas' => $invoices], 200);
+    }
+
     public function invoicePDF(Invoice $invoice)
     {
         //
@@ -190,6 +191,20 @@ class InvoiceController extends Controller
             new InvoiceMail($clientName, $invoiceNumber, $pdfPath));
 
         return response()->json(['status' => 'sent']);
+    }
+
+    private function invoice_list()
+    {
+        if(Auth::user()->role == 'ADMIN') {
+            $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
+        }
+        else {
+            $client_ids = Client::where('user_id', Auth::user()->id)->pluck('id')->toArray();
+
+            $invoices = Invoice::with(['client', 'invoiceProject'])->whereIn('client_id', $client_ids)->orderByDesc('invoice_number')->get();
+        }
+
+        return $invoices;
     }
 
     private function invoice_pdf_generate($invoice)
