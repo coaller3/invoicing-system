@@ -133,29 +133,4 @@ class UserController extends Controller
 
     }
 
-    public function reset_password(Request $request)
-    {
-        //
-        $validatedData = $request->validate([
-            'email' => 'required|string|email|max:255',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-        $new_password = Str::random(8);
-
-        if ($user) {
-
-            $user->fill([
-                'password' => bcrypt($new_password),
-            ]);
-            $user->save();
-
-            return response()->json(['status'=>"success"], 200);
-
-        }
-
-        return response()->json(['status'=>"failed"], 500);
-
-    }
-
 }

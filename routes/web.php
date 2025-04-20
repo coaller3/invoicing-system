@@ -56,15 +56,6 @@ Route::get('/register', function () {
 
 Route::post('register', [UserController::class, 'register']);
 
-// reset password
-Route::get('/reset_password', function () {
-
-    return view('reset-password');
-
-})->name('reset_password');
-
-Route::post('reset_password', [UserController::class, 'reset_password']);
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
