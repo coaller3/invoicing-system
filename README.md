@@ -74,3 +74,4 @@ Then you can run the API through Postman Collection.
 
 - Make sure all required PHP extensions are enabled in your Laragon PHP settings.
 - The default login credentials are seeded via the database seeders.
+- To process and send queued emails, open a terminal, navigate to your project folder, and run: php artisan queue:work. This command will process the email jobs in the queue and send the emails.
