@@ -101,8 +101,8 @@ class ProjectController extends Controller
         ]);
 
         $project_data = [
-            'client_id' => $request->client_id,
             'name' => $request->name,
+            'client_id' => $request->client_id,
             'description' => $request->description,
             'rate' => $request->rate,
             'duration' => $request->duration,

@@ -186,39 +186,10 @@ class InvoiceController extends Controller
         $pdfPath = 'Invoice/' . $invoiceNumber . '.pdf';
         Storage::put($pdfPath, $pdfContent);
 
-        Mail::to("damiensim96@gmail.com")->queue(
-        // Mail::to($email)->queue(
+        Mail::to($email)->queue(
             new InvoiceMail($clientName, $invoiceNumber, $pdfPath));
 
         return response()->json(['status' => 'sent']);
-    }
-
-    private function invoice_list()
-    {
-        if(Auth::user()->role == 'ADMIN') {
-            $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
-        }
-        else {
-            $client_ids = Client::where('user_id', Auth::user()->id)->pluck('id')->toArray();
-
-            $invoices = Invoice::with(['client', 'invoiceProject'])->whereIn('client_id', $client_ids)->orderByDesc('invoice_number')->get();
-        }
-
-        return $invoices;
-    }
-
-    private function invoice_pdf_generate($invoice)
-    {
-        $invoice = Invoice::with(['client'])->where('id', $invoice->id)->first();
-
-        $invoice_projects = InvoiceProject::with(['project'])->where('invoice_id', $invoice->id)->get();
-
-        $pdf = PDF::loadView('invoice.invoice_pdf', [
-            'invoice' => $invoice,
-            'invoice_projects' => $invoice_projects,
-        ])->setPaper('a4', 'potrait');
-
-        return $pdf;
     }
 
     public function get_project(Client $client)
@@ -279,6 +250,34 @@ class InvoiceController extends Controller
 
             return response()->json(['status' => 'success'], 200);
         });
+    }
+
+    private function invoice_list()
+    {
+        if(Auth::user()->role == 'ADMIN') {
+            $invoices = Invoice::with(['client', 'invoiceProject'])->orderByDesc('invoice_number')->get();
+        }
+        else {
+            $client_ids = Client::where('user_id', Auth::user()->id)->pluck('id')->toArray();
+
+            $invoices = Invoice::with(['client', 'invoiceProject'])->whereIn('client_id', $client_ids)->orderByDesc('invoice_number')->get();
+        }
+
+        return $invoices;
+    }
+
+    private function invoice_pdf_generate($invoice)
+    {
+        $invoice = Invoice::with(['client'])->where('id', $invoice->id)->first();
+
+        $invoice_projects = InvoiceProject::with(['project'])->where('invoice_id', $invoice->id)->get();
+
+        $pdf = PDF::loadView('invoice.invoice_pdf', [
+            'invoice' => $invoice,
+            'invoice_projects' => $invoice_projects,
+        ])->setPaper('a4', 'potrait');
+
+        return $pdf;
     }
 
     private function invoice_num_generate()

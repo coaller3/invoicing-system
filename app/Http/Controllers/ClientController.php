@@ -43,7 +43,7 @@ class ClientController extends Controller
             'email' => 'required|string|email|max:255|unique:clients',
             'phone' => 'required|string|max:255',
             'company' => 'required|string|max:255',
-            'address' => 'required|text',
+            'address' => 'required|string',
         ]);
 
         $client_data = [
@@ -92,7 +92,7 @@ class ClientController extends Controller
             'email' => 'required|string|email|max:255|unique:clients,email,'.$client->id,
             'phone' => 'required|string|max:255',
             'company' => 'required|string|max:255',
-            'address' => 'required|text',
+            'address' => 'required|string',
             'status' => 'required|string|max:255',
         ]);
 
