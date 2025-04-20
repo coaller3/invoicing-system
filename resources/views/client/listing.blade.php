@@ -74,11 +74,9 @@
 
                                             &nbsp;
 
-                                            @if($item->id !== 1)
-                                                <button class="btn btn-danger" data-route="{{url('clients')}}/{{$item->id}}" data-csrf="{{ csrf_token() }}" onclick="removeData(this)">
-                                                    Delete
-                                                </button>
-                                            @endif
+                                            <button class="btn btn-danger" data-route="{{url('clients')}}/{{$item->id}}" data-csrf="{{ csrf_token() }}" onclick="removeData(this)">
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                     @endforeach
