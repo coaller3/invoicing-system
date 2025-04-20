@@ -26,7 +26,8 @@ Move the project folder into your Laragon `www` directory.
 ### 3. Configure Virtual Host
 
 - Open Laragon.
-- Go to **Menu > Quick app > Laravel** or add a new virtual host for `http://invoicing-system.test`.
+- Go to **Menu > Preferences > General** tab and check if **Auto-create Virtual Hosts** is ticked.
+- Laragon will auto generate the virtual host base on folder name in **www** with **.test** at end (default).
 
 ### 4. Install Dependencies
 
