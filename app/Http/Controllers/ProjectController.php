@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProjectExport;
 use App\Models\Project;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Traits\ClientTrait;
 
@@ -16,10 +18,18 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $datas = $this->project_list();
+
+        if($request->has('excel')){
+
+            $export = new ProjectExport($datas);
+
+            return Excel::download($export, 'Project List.xlsx');
+
+        }
 
         return view('project.listing', ['datas' => $datas]);
     }

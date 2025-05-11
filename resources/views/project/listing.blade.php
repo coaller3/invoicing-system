@@ -28,6 +28,12 @@
                         <h3 class="card-title">Project</h3>
                         <div style="float:right;">
                             <div style="display: inline-block;">
+                                <a href="{{ url('projects') }}?excel=excel" class="btn btn-block btn-info btn-sm" target="_blank">Export Excel</a>
+                            </div>
+
+                            &ensp;
+
+                            <div style="display: inline-block;">
                                 <a href="{{ url('projects/create') }}" type="button" class="btn btn-block btn-success btn-sm">Create New Project</a>
                             </div>
                         </div>
