@@ -29,6 +29,28 @@
                         <h3 class="card-title">User Details</h3>
                     </div>
                     <div class="card-body">
+                        @if($datas->image)
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group" style="text-align: center;">
+                                    <img src="{{ asset('storage/'.$datas->image) }}" alt="User Image" class="img-fluid" style="width: auto; height: 30vh;">
+
+                                    <br>
+
+                                    <a href="{{ asset('storage/'.$datas->image) }}" class="btn btn-info mt-2" download="{{ $datas->name }}.{{ pathinfo($datas->image, PATHINFO_EXTENSION) }}">
+                                        Download
+                                    </a>
+
+                                    &emsp;
+
+                                    <button class="btn btn-danger mt-2" data-route="{{ url('users') }}/{{ $datas->id }}/delete_image" data-csrf="{{ csrf_token() }}" onclick="removeData(this)">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
@@ -97,6 +119,30 @@
                 <form id="edit_form" autocomplete="off">
                     @csrf
                     <div class="modal-body">
+
+                        @if($datas->image)
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group" style="text-align: center;">
+                                        <img src="{{ asset('storage/'.$datas->image) }}" alt="User Image" class="img-fluid" style="width: auto; height: 30vh;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Image (JPG / JPEG / PNG)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="image" name="image" accept=".jpg, .jpeg, .png">
+                                            <label class="custom-file-label" for="image">Choose Image</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">

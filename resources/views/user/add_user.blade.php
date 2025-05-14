@@ -34,6 +34,19 @@
                             <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
+                                        <label>Image (JPG / JPEG / PNG)</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="image" name="image" accept=".jpg, .jpeg, .png">
+                                                <label class="custom-file-label" for="image">Choose Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
                                         <label>Name <b style="color: red;">*</b></label>
                                         <input type="text" class="form-control" placeholder="Enter name" name="name" required>
                                     </div>

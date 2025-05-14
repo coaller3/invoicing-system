@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     // users
     Route::resource('users', UserController::class)->except(['edit']);
     Route::put('/users/{user}/change_password', [UserController::class, 'change_password']);
+    Route::delete('/users/{user}/delete_image', [UserController::class, 'delete_image'])->name('users.delete_image');
 
     Route::get('/profile/{user}', [UserController::class, 'profile'])->name('profile');
 

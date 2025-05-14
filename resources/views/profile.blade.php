@@ -28,6 +28,15 @@
                         <h3 class="card-title">User Profile</h3>
                     </div>
                     <div class="card-body">
+                        @if($datas->image)
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group" style="text-align: center;">
+                                        <img src="{{ asset('storage/'.$datas->image) }}" alt="User Image" class="img-fluid" style="width: auto; height: 30vh;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">

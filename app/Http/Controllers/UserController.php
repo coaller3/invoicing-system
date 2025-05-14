@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -30,6 +30,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $user_data = [
@@ -39,6 +40,16 @@ class UserController extends Controller
             'role' => $request->role,
             'status' => 'ACTIVE',
         ];
+
+        if($request->hasFile('image')) {
+
+            $image = $request->file('image');
+            $folder_path = 'User';
+            $path = $image->store($folder_path);
+
+            $user_data['image'] = $path;
+
+        }
 
         $user = User::create($user_data);
 
@@ -66,6 +77,8 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'status' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $user_data = [
@@ -74,6 +87,23 @@ class UserController extends Controller
             'role'=> $request->role,
             'status'=> $request->status,
         ];
+
+        if($request->hasFile('image')) {
+
+            // Delete old image if exists
+            if ($user->image) {
+                if (Storage::exists($user->image)) {
+                    Storage::delete($user->image);
+                }
+            }
+
+            $image = $request->file('image');
+            $folder_path = 'User';
+            $path = $image->store($folder_path);
+
+            $user_data['image'] = $path;
+
+        }
 
         $user->fill($user_data);
         $user->save();
@@ -85,6 +115,20 @@ class UserController extends Controller
     {
         //
         $user->delete();
+        return response()->json(['status'=>"success"], 200);
+    }
+
+    public function delete_image(User $user)
+    {
+        //
+        if ($user->image) {
+            if (Storage::exists($user->image)) {
+                Storage::delete($user->image);
+            }
+            $user->image = null;
+            $user->save();
+        }
+
         return response()->json(['status'=>"success"], 200);
     }
 
